@@ -21,7 +21,7 @@ fetchSubmit.addEventListener('submit', event => {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-    per_page: 9,
+    per_page: 15,
   });
 
   fetchPhotos(searchParams) //call a function from first js that doing https job and bring back converted from JSON into js files
