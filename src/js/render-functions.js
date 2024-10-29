@@ -1,7 +1,6 @@
 //import library file plus file goIT tell us
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-// const loadButton = document.querySelector('.load-button');
 let lightbox = null; //this variable need in work with library
 
 //creating list with photos
