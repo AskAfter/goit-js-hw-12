@@ -27,14 +27,14 @@ loadButton.addEventListener('click', async () => {
   // const previousScrollHeight = document.documentElement.scrollHeight;
   await loadPhotos(); // adding new page to existed one
 
-  // const photoItem = document.querySelector('.photo-item');
-  // if (photoItem) {
-  //   const itemHeight = photoItem.getBoundingClientRect().height;
-  //   window.scrollBy({
-  //     top: itemHeight * 2,
-  //     behavior: 'smooth',
-  //   });
-  // }
+  const photoItem = document.querySelector('.photo-item');
+  if (photoItem) {
+    const itemHeight = photoItem.getBoundingClientRect().height;
+    window.scrollBy({
+      top: itemHeight * 2,
+      behavior: 'smooth',
+    });
+  }
 });
 
 async function loadPhotos() {
