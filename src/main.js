@@ -1,55 +1,90 @@
-import { fetchPhotos } from './js/pixabay-api'; //I can use function from first js file
-import { renderPhotos } from './js/render-functions'; // the same from second file
-//I have this library but it is work
+import { fetchPhotos } from './js/pixabay-api';
+import { renderPhotos } from './js/render-functions';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const fetchSubmit = document.querySelector('.form');
 const searchInput = document.querySelector('.search-input');
 const loader = document.querySelector('.loader');
+const loadButton = document.querySelector('.load-button');
+const photoList = document.querySelector('.photo-list');
 
-fetchSubmit.addEventListener('submit', event => {
+let page = 1;
+let perPage = 15;
+let totalHits = 0;
+let searchRequest = '';
+
+fetchSubmit.addEventListener('submit', async event => {
   event.preventDefault();
-  const searchRequest = searchInput.value;
-  const photoList = document.querySelector('.photo-list'); //I have no idea why with variable don't work in second js file
-  loader.style.display = 'block'; //just asked gpt to help with this library
+  searchRequest = searchInput.value.trim();
+  page = 1; // need to plus one page to our page that we see
+  photoList.innerHTML = ''; // cleaning results that was before
+  loadButton.style.display = 'none'; // button hiding if we are input new search
+  await loadPhotos();
+});
 
-  //creating our object with parameters we need in research
-  const searchParams = new URLSearchParams({
+loadButton.addEventListener('click', async () => {
+  await loadPhotos(); // adding new page to existed one
+});
+
+async function loadPhotos() {
+  if (!searchRequest) return;
+
+  loader.style.display = 'block';
+  const searchParams = {
     key: '46706614-1dc051161d475bf769026fdc5',
-    q: `${searchRequest}`,
+    q: searchRequest,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-    per_page: 15,
-  });
+    per_page: perPage,
+    page,
+  };
 
-  fetchPhotos(searchParams) //call a function from first js that doing https job and bring back converted from JSON into js files
-    .then(photos => {
-      loader.style.display = 'none';
-      searchInput.value = '';
-      if (photos.hits.length === 0) {
-        photoList.innerHTML = '';
-        iziToast.error({
-          title: 'Error',
-          message:
-            'Sorry, no images found for your search query. Please try again!',
-        });
-      } else {
-        renderPhotos(photos.hits); //if everything good this will do photo in window
-      }
-    })
-    //I don't know for what I need .catch here if I have almost the same in .then
-    .catch(error => {
-      loader.style.display = 'none';
+  try {
+    const photos = await fetchPhotos(searchParams);
+    loader.style.display = 'none';
+    if (photos.hits.length === 0) {
       iziToast.error({
         title: 'Error',
-        message: `Something went wrong. Error: ${error.message}`,
+        message: 'No images found. Try again with a different query.',
       });
-    });
-});
+      return;
+    }
 
-//took this code from library
+    totalHits = photos.totalHits;
+    await renderPhotos(photos.hits); // adding new photos
+    page++; // going to next page
+
+    const photoItem = document.querySelector('.photo-item');
+    if (photoItem) {
+      const itemHeight = photoItem.getBoundingClientRect().height;
+      window.scrollBy({
+        top: itemHeight * 2,
+        behavior: 'smooth',
+      });
+    }
+
+    // checking about more results
+    if (page * perPage >= totalHits) {
+      loadButton.style.display = 'none';
+      iziToast.info({
+        title: 'End of results',
+        message: "We're sorry, but you've reached the end of search results.",
+      });
+    } else {
+      loadButton.style.display = 'block';
+    }
+  } catch (error) {
+    loader.style.display = 'none';
+    iziToast.error({
+      title: 'Error',
+      message: `Something went wrong. Error: ${error.message}`,
+    });
+  }
+}
+
+// iziToast Settings
 iziToast.settings({
   timeout: 10000,
   position: 'topRight',
@@ -57,10 +92,4 @@ iziToast.settings({
   icon: 'material-icons',
   transitionIn: 'flipInX',
   transitionOut: 'flipOutX',
-  onOpening: function () {
-    // console.log('callback abriu!');
-  },
-  onClosing: function () {
-    // console.log('callback fechou!');
-  },
 });

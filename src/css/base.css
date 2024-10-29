@@ -63,7 +63,7 @@ main:has(.back-link) {
 }
 
 .submit-button {
-  width: 75px;
+  min-width: 75px;
   height: 40px;
   background-color: #4e75ff;
   border-radius: 8px;
@@ -77,7 +77,26 @@ main:has(.back-link) {
   letter-spacing: 0.64px;
 }
 
-.submit-button:hover {
+.load-button {
+  padding: 8px 16px;
+  width: 125px;
+  height: 40px;
+  margin: 0 auto;
+  display: none;
+  background-color: #4e75ff;
+  border-radius: 8px;
+  border: none;
+  color: #fff;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.64px;
+}
+
+.submit-button:hover,
+.load-button:hover {
   background-color: #6c8cff;
 }
 
@@ -88,7 +107,7 @@ main:has(.back-link) {
   width: 100%;
   list-style-type: none;
   padding: 0;
-  margin: 0 auto;
+  margin: 0 auto 20px;
   justify-content: center;
   align-items: center;
   gap: 24px;

@@ -1,16 +1,16 @@
 //import library file plus file goIT tell us
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
+// const loadButton = document.querySelector('.load-button');
 let lightbox = null; //this variable need in work with library
 
 //creating list with photos
-export function renderPhotos(photos) {
+export async function renderPhotos(photos) {
   const photoList = document.querySelector('.photo-list'); //declaration ul tag
-  photoList.innerHTML = ''; //clearing window from previous photos
+  // photoList.innerHTML = ''; //clearing window from previous photos
 
   //creating markup with photos
-  const markup = photos
+  const markup = await photos
     .map(photo => {
       //after created list with markup for photos (just copied from lms: there is the same example)
       return `
@@ -41,7 +41,6 @@ export function renderPhotos(photos) {
     .join('');
   //adding markup to DOM
   photoList.insertAdjacentHTML('beforeend', markup);
-
   //I don't understand this to the end, libraries killing me:(
   if (!lightbox) {
     lightbox = new SimpleLightbox('.gallery-item', {
